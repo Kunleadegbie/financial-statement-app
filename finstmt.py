@@ -43,8 +43,8 @@ retained_earnings = st.number_input("Retained Earnings (Previous Years)", min_va
 
 st.subheader("Cash Flow Items")
 cash_from_operations = st.number_input("Net Cash from Operating Activities", min_value=0.0, value=0.0)
-cash_from_investing = st.number_input("Net Cash from Investing Activities", min_value=0.0, value=0.0)
-cash_from_financing = st.number_input("Net Cash from Financing Activities", min_value=0.0, value=0.0)
+cash_from_investing = st.number_input("Net Cash from Investing Activities", value=0.0)
+cash_from_financing = st.number_input("Net Cash from Financing Activities", value=0.0)
 
 # Action button to generate reports
 if st.button("📊 Generate Financial Statements"):
