@@ -96,38 +96,8 @@ This project is open-source for educational and personal use. Commercial use or 
 
 ## 👤 Author
 
-**Chumcred Limited**
+**Adekunle Adegbie-MD/CEO, Chumcred Limited**
 \[www.linkedin.com/in/adekunle-adegbie-phd-mba-fcs-fica-hcib-61b6338b]
 
 ---
-
-## 📸 Screenshot
-
-![App Screenshot](screenshot.png)
-
----
-
-````
-
----
-
-## ✅ Next steps:
-- Save that as `README.md` in your project folder
-- If you haven’t already, create a `requirements.txt` file using:
-
-```bash
-pip freeze > requirements.txt
-````
-
-* Add everything to Git:
-
-```bash
-git add .
-git commit -m "Initial commit with financial statement generator app"
-git push origin main
-```
-
-And you’re good 🚀
-
-Would you like me to also write your `requirements.txt` for this app based on the packages you’re using?
 
