@@ -28,16 +28,13 @@ other_income = st.number_input("Other Income", min_value=0.0, value=0.0)
 tax_expense = st.number_input("Tax Expense", min_value=0.0, value=0.0)
 
 st.subheader("Balance Sheet Items")
-# Assets
 cash = st.number_input("Cash and Cash Equivalents", min_value=0.0, value=0.0)
 inventory = st.number_input("Inventory", min_value=0.0, value=0.0)
 receivables = st.number_input("Trade Receivables", min_value=0.0, value=0.0)
 fixed_assets = st.number_input("Fixed Assets", min_value=0.0, value=0.0)
-# Liabilities
 payables = st.number_input("Trade Payables", min_value=0.0, value=0.0)
 short_term_loans = st.number_input("Short-term Loans", min_value=0.0, value=0.0)
 long_term_loans = st.number_input("Long-term Loans", min_value=0.0, value=0.0)
-# Equity
 share_capital = st.number_input("Share Capital", min_value=0.0, value=0.0)
 retained_earnings = st.number_input("Retained Earnings (Previous Years)", min_value=0.0, value=0.0)
 
@@ -46,10 +43,10 @@ cash_from_operations = st.number_input("Net Cash from Operating Activities", min
 cash_from_investing = st.number_input("Net Cash from Investing Activities", value=0.0)
 cash_from_financing = st.number_input("Net Cash from Financing Activities", value=0.0)
 
-# Action button to generate reports
+# Generate Button
 if st.button("📊 Generate Financial Statements"):
 
-    # Profit & Loss Statement
+    ## Profit & Loss Statement
     gross_profit = sales - cost_of_sales
     operating_profit = gross_profit - operating_expenses + other_income
     profit_before_tax = operating_profit - interest_expense
@@ -63,10 +60,11 @@ if st.button("📊 Generate Financial Statements"):
                    -interest_expense, profit_before_tax, -tax_expense, profit_after_tax]
     })
 
-    # Balance Sheet
+    ## Balance Sheet
     total_assets = cash + inventory + receivables + fixed_assets
     total_liabilities = payables + short_term_loans + long_term_loans
     total_equity = share_capital + retained_earnings + retained_earnings_current
+
     balance_sheet = pd.DataFrame({
         "Description": ["Assets", "Cash and Cash Equivalents", "Inventory", "Trade Receivables", "Fixed Assets",
                         "Total Assets", "", "Liabilities", "Trade Payables", "Short-term Loans", "Long-term Loans",
@@ -77,7 +75,7 @@ if st.button("📊 Generate Financial Statements"):
                    None, share_capital, retained_earnings, retained_earnings_current, total_equity]
     })
 
-    # Cash Flow Statement
+    ## Cash Flow Statement
     net_increase_cash = cash_from_operations + cash_from_investing + cash_from_financing
     closing_cash = cash
 
@@ -87,90 +85,126 @@ if st.button("📊 Generate Financial Statements"):
         "Amount": [cash_from_operations, cash_from_investing, cash_from_financing, net_increase_cash, closing_cash]
     })
 
-    # Financial Ratios
-    ratios = {
-        "Current Ratio": round((cash + receivables + inventory) / (payables + short_term_loans)
-                               if (payables + short_term_loans) else np.nan, 2),
-        "Quick Ratio": round((cash + receivables) / (payables + short_term_loans)
-                               if (payables + short_term_loans) else np.nan, 2),
-        "Debt to Equity Ratio": round((short_term_loans + long_term_loans) / total_equity if total_equity else np.nan, 2),
-        "Gross Profit Margin": round(gross_profit / sales if sales else np.nan, 2),
-        "Operating Margin": round(operating_profit / sales if sales else np.nan, 2),
-        "Net Profit Margin": round(profit_after_tax / sales if sales else np.nan, 2),
-        "Return on Equity (ROE)": round(profit_after_tax / total_equity if total_equity else np.nan, 2)
-    }
+    ## Financial Ratios
+    current_ratio = (cash + receivables + inventory) / (payables + short_term_loans) if (payables + short_term_loans) else np.nan
+    quick_ratio = (cash + receivables) / (payables + short_term_loans) if (payables + short_term_loans) else np.nan
+    debt_equity_ratio = (short_term_loans + long_term_loans) / total_equity if total_equity else np.nan
+    gross_margin = gross_profit / sales if sales else np.nan
+    operating_margin = operating_profit / sales if sales else np.nan
+    net_margin = profit_after_tax / sales if sales else np.nan
+    roe = profit_after_tax / total_equity if total_equity else np.nan
 
-    # New: Add Analysis, Implications, Recommendations
-    ratio_analysis = {
-        "Current Ratio": ("Indicates liquidity", "Company can meet short-term obligations", "Maintain or improve working capital management"),
-        "Quick Ratio": ("Measures immediate liquidity", "Ability to settle short-term debts without selling inventory", "Improve receivables collection"),
-        "Debt to Equity Ratio": ("Assesses financial leverage", "Higher ratio implies more debt risk", "Balance debt-equity mix prudently"),
-        "Gross Profit Margin": ("Shows profitability from core operations", "Higher margin means effective cost control", "Maintain or improve gross margins"),
-        "Operating Margin": ("Reflects operational efficiency", "Higher margin indicates good cost control", "Monitor operating expenses"),
-        "Net Profit Margin": ("Shows overall profitability", "Higher ratio indicates good bottom line", "Enhance operational and financial efficiency"),
-        "Return on Equity (ROE)": ("Measures return to shareholders", "Higher ROE is favorable", "Sustain profitability and equity base")
-    }
+    ratios = pd.DataFrame({
+        "Ratio": ["Current Ratio", "Quick Ratio", "Debt to Equity Ratio", "Gross Profit Margin",
+                  "Operating Margin", "Net Profit Margin", "Return on Equity (ROE)"],
+        "Value": [round(current_ratio, 2), round(quick_ratio, 2), round(debt_equity_ratio, 2),
+                  round(gross_margin, 2), round(operating_margin, 2), round(net_margin, 2), round(roe, 2)]
+    })
 
-    ratios_df = pd.DataFrame([
-        {
-            "Ratio": ratio,
-            "Value": value,
-            "Analysis": ratio_analysis[ratio][0],
-            "Implications": ratio_analysis[ratio][1],
-            "Recommendations": ratio_analysis[ratio][2]
-        }
-        for ratio, value in ratios.items()
-    ])
+    ## Implications & Recommendations
+    implications = []
+    recommendations = []
 
-    st.success("✅ Financial Statements Generated")
+    for index, row in ratios.iterrows():
+        ratio_name = row["Ratio"]
+        value = row["Value"]
 
-    # Display on Screen
-    st.subheader("📄 Balance Sheet")
-    st.dataframe(balance_sheet)
+        if np.isnan(value):
+            implications.append("Not enough data")
+            recommendations.append("Provide missing figures")
+        else:
+            if ratio_name == "Current Ratio":
+                if value < 1:
+                    implications.append("Liquidity risk; may struggle to meet short-term obligations")
+                    recommendations.append("Improve working capital position")
+                elif value > 2:
+                    implications.append("Excess idle resources")
+                    recommendations.append("Invest excess liquidity or reduce liabilities")
+                else:
+                    implications.append("Healthy liquidity position")
+                    recommendations.append("Maintain balance")
 
-    st.subheader("📄 Profit & Loss Statement")
+            elif ratio_name == "Quick Ratio":
+                if value < 1:
+                    implications.append("Weak liquidity")
+                    recommendations.append("Boost liquid assets or reduce current liabilities")
+                else:
+                    implications.append("Good liquidity buffer")
+                    recommendations.append("Maintain current level")
+
+            elif ratio_name == "Debt to Equity Ratio":
+                if value > 2:
+                    implications.append("High financial risk due to excessive leverage")
+                    recommendations.append("Reduce debt or increase equity")
+                else:
+                    implications.append("Acceptable leverage level")
+                    recommendations.append("Maintain or optimize capital structure")
+
+            elif ratio_name == "Gross Profit Margin":
+                if value < 0.2:
+                    implications.append("Low profitability on sales")
+                    recommendations.append("Reduce cost of sales or increase selling prices")
+                else:
+                    implications.append("Good profitability")
+                    recommendations.append("Maintain margin levels")
+
+            elif ratio_name == "Operating Margin":
+                if value < 0.1:
+                    implications.append("Operational inefficiencies")
+                    recommendations.append("Control operating expenses")
+                else:
+                    implications.append("Efficient operations")
+                    recommendations.append("Maintain cost control")
+
+            elif ratio_name == "Net Profit Margin":
+                if value < 0.05:
+                    implications.append("Low profitability")
+                    recommendations.append("Increase revenue or reduce total expenses")
+                else:
+                    implications.append("Healthy bottom-line profitability")
+                    recommendations.append("Sustain performance")
+
+            elif ratio_name == "Return on Equity (ROE)":
+                if value < 0.1:
+                    implications.append("Low return for shareholders")
+                    recommendations.append("Improve profitability or optimize equity")
+                else:
+                    implications.append("Good return for shareholders")
+                    recommendations.append("Maintain or enhance ROE")
+
+    ratio_analysis = pd.DataFrame({
+        "Ratio": ratios["Ratio"],
+        "Value": ratios["Value"],
+        "Implication": implications,
+        "Recommendation": recommendations
+    })
+
+    # 📊 Display Financial Statements
+    st.subheader("📑 Profit & Loss Statement")
     st.dataframe(profit_loss)
 
-    st.subheader("📄 Cash Flow Statement")
+    st.subheader("📑 Balance Sheet")
+    st.dataframe(balance_sheet)
+
+    st.subheader("📑 Cash Flow Statement")
     st.dataframe(cash_flow)
 
-    st.subheader("📊 Financial Ratios")
-    st.dataframe(ratios_df)
+    st.subheader("📊 Financial Ratios & Analysis")
+    st.dataframe(ratio_analysis)
 
-    # Excel Download
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
-        # Balance Sheet
-        balance_sheet.to_excel(writer, index=False, sheet_name="Balance Sheet", startrow=4)
-        ws = writer.sheets["Balance Sheet"]
-        ws.write("A1", f"{company_name} - Balance Sheet")
-        ws.write("A2", reporting_period)
-        ws.write("A3", f"Prepared by: {prepared_by}")
-
-        # Profit & Loss
-        profit_loss.to_excel(writer, index=False, sheet_name="Profit & Loss", startrow=4)
-        ws = writer.sheets["Profit & Loss"]
-        ws.write("A1", f"{company_name} - Profit & Loss")
-        ws.write("A2", reporting_period)
-        ws.write("A3", f"Prepared by: {prepared_by}")
-
-        # Cash Flow
-        cash_flow.to_excel(writer, index=False, sheet_name="Cash Flow", startrow=4)
-        ws = writer.sheets["Cash Flow"]
-        ws.write("A1", f"{company_name} - Cash Flow")
-        ws.write("A2", reporting_period)
-        ws.write("A3", f"Prepared by: {prepared_by}")
-
-        # Financial Ratios
-        ratios_df.to_excel(writer, index=False, sheet_name="Financial Ratios", startrow=4)
-        ws = writer.sheets["Financial Ratios"]
-        ws.write("A1", f"{company_name} - Financial Ratios")
-        ws.write("A2", reporting_period)
-        ws.write("A3", f"Prepared by: {prepared_by}")
+    # 📥 Excel Export
+    buffer = io.BytesIO()
+    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+        profit_loss.to_excel(writer, sheet_name="Profit & Loss", index=False)
+        balance_sheet.to_excel(writer, sheet_name="Balance Sheet", index=False)
+        cash_flow.to_excel(writer, sheet_name="Cash Flow", index=False)
+        ratios.to_excel(writer, sheet_name="Ratios", index=False)
+        ratio_analysis.to_excel(writer, sheet_name="Recommendations", index=False)
+    
 
     st.download_button(
-        label="📥 Download Excel Report",
-        data=output.getvalue(),
-        file_name="financial_statements.xlsx",
+        label="📥 Download Financial Report (Excel)",
+        data=buffer,
+        file_name="Financial_Statements_Report.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
