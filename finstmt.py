@@ -6,6 +6,28 @@ import io
 # Streamlit page setup
 st.set_page_config(page_title="Automated Financial Statement Generator", layout="wide")
 
+# Password protection
+def check_password():
+    def password_entered():
+        if st.session_state["password"] == "chumcred":
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]  # optional: clean up password input from session
+        else:
+            st.session_state["password_correct"] = False
+
+    if "password_correct" not in st.session_state:
+        # First run: ask for password
+        st.text_input("🔒 Enter password to access this app", type="password", key="password", on_change=password_entered)
+        st.stop()
+    elif not st.session_state["password_correct"]:
+        # If password is incorrect, keep asking
+        st.text_input("🔒 Enter password to access this app", type="password", key="password", on_change=password_entered)
+        st.error("Incorrect password. Please try again.")
+        st.stop()
+
+# Run the password check before anything else
+
+check_password()
 st.title("📊 Automated Financial Statement Generator")
 st.write("Prepare Balance Sheet, Profit & Loss, and Cash Flow Statements with financial ratio analysis instantly.")
 st.markdown("---")
