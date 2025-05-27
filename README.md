@@ -15,7 +15,7 @@ It also allows you to download the complete report as an Excel file.
 ## 🔒 Access Control
 
 The app is password-protected for authorized use only.  
-**Default password:** `xxxxxxxx`
+**Default password:** `xxxxxxxx` "Contact the developer for the app password"
 
 ---
 
@@ -53,3 +53,81 @@ The app is password-protected for authorized use only.
 ```bash
 git clone https://github.com/yourusername/financial-statement-generator.git
 cd financial-statement-generator
+
+
+Perfect — I’ll write a clean, professional `README.md` file for your **Automated Financial Statement Generator** app project, ready for you to push to GitHub.
+
+2. **Create and activate virtual environment (optional)**
+
+```bash
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+```
+
+3. **Install required packages**
+
+```bash
+pip install -r requirements.txt
+```
+
+4. **Run the Streamlit app**
+
+```bash
+streamlit run app.py
+```
+
+> Replace `app.py` with your actual Python script name if different (e.g., `finstmt5.py`)
+
+---
+
+## 📦 To-Do
+
+* Add export to PDF functionality
+* Build multi-user login support
+* Add more advanced ratio benchmarking
+
+---
+
+## 📄 License
+
+This project is open-source for educational and personal use. Commercial use or redistribution is prohibited without permission from **Chumcred Limited**.
+
+---
+
+## 👤 Author
+
+**Chumcred Limited**
+\[www.linkedin.com/in/adekunle-adegbie-phd-mba-fcs-fica-hcib-61b6338b]
+
+---
+
+## 📸 Screenshot
+
+![App Screenshot](screenshot.png)
+
+---
+
+````
+
+---
+
+## ✅ Next steps:
+- Save that as `README.md` in your project folder
+- If you haven’t already, create a `requirements.txt` file using:
+
+```bash
+pip freeze > requirements.txt
+````
+
+* Add everything to Git:
+
+```bash
+git add .
+git commit -m "Initial commit with financial statement generator app"
+git push origin main
+```
+
+And you’re good 🚀
+
+Would you like me to also write your `requirements.txt` for this app based on the packages you’re using?
+
