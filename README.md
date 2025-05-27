@@ -15,7 +15,7 @@ It also allows you to download the complete report as an Excel file.
 ## 🔒 Access Control
 
 The app is password-protected for authorized use only.  
-**Default password:** `chumcred`
+**Default password:** `xxxxxxxx`
 
 ---
 
