@@ -91,7 +91,7 @@ if st.button("📊 Generate Financial Statements"):
     ratios = {
         "Current Ratio": round((cash + receivables + inventory) / (payables + short_term_loans)
                                if (payables + short_term_loans) else np.nan, 2),
-	"Quick Ratio": round((cash + receivables) / (payables + short_term_loans)
+        "Quick Ratio": round((cash + receivables) / (payables + short_term_loans)
                                if (payables + short_term_loans) else np.nan, 2),
         "Debt to Equity Ratio": round((short_term_loans + long_term_loans) / total_equity if total_equity else np.nan, 2),
         "Gross Profit Margin": round(gross_profit / sales if sales else np.nan, 2),
@@ -100,7 +100,27 @@ if st.button("📊 Generate Financial Statements"):
         "Return on Equity (ROE)": round(profit_after_tax / total_equity if total_equity else np.nan, 2)
     }
 
-    ratios_df = pd.DataFrame(list(ratios.items()), columns=["Ratio", "Value"])
+    # New: Add Analysis, Implications, Recommendations
+    ratio_analysis = {
+        "Current Ratio": ("Indicates liquidity", "Company can meet short-term obligations", "Maintain or improve working capital management"),
+        "Quick Ratio": ("Measures immediate liquidity", "Ability to settle short-term debts without selling inventory", "Improve receivables collection"),
+        "Debt to Equity Ratio": ("Assesses financial leverage", "Higher ratio implies more debt risk", "Balance debt-equity mix prudently"),
+        "Gross Profit Margin": ("Shows profitability from core operations", "Higher margin means effective cost control", "Maintain or improve gross margins"),
+        "Operating Margin": ("Reflects operational efficiency", "Higher margin indicates good cost control", "Monitor operating expenses"),
+        "Net Profit Margin": ("Shows overall profitability", "Higher ratio indicates good bottom line", "Enhance operational and financial efficiency"),
+        "Return on Equity (ROE)": ("Measures return to shareholders", "Higher ROE is favorable", "Sustain profitability and equity base")
+    }
+
+    ratios_df = pd.DataFrame([
+        {
+            "Ratio": ratio,
+            "Value": value,
+            "Analysis": ratio_analysis[ratio][0],
+            "Implications": ratio_analysis[ratio][1],
+            "Recommendations": ratio_analysis[ratio][2]
+        }
+        for ratio, value in ratios.items()
+    ])
 
     st.success("✅ Financial Statements Generated")
 
@@ -137,11 +157,11 @@ if st.button("📊 Generate Financial Statements"):
         # Cash Flow
         cash_flow.to_excel(writer, index=False, sheet_name="Cash Flow", startrow=4)
         ws = writer.sheets["Cash Flow"]
-        ws.write("A1", f"{company_name} - Cash Flow Statement")
+        ws.write("A1", f"{company_name} - Cash Flow")
         ws.write("A2", reporting_period)
         ws.write("A3", f"Prepared by: {prepared_by}")
 
-        # Ratios
+        # Financial Ratios
         ratios_df.to_excel(writer, index=False, sheet_name="Financial Ratios", startrow=4)
         ws = writer.sheets["Financial Ratios"]
         ws.write("A1", f"{company_name} - Financial Ratios")
@@ -149,11 +169,8 @@ if st.button("📊 Generate Financial Statements"):
         ws.write("A3", f"Prepared by: {prepared_by}")
 
     st.download_button(
-        label="📥 Download Financial Statements as Excel",
+        label="📥 Download Excel Report",
         data=output.getvalue(),
-        file_name=f"{company_name}_Financial_Statements.xlsx",
+        file_name="financial_statements.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
-
-st.markdown("---")
-st.caption("Financial Statement prepared by Chumcred Limited")
